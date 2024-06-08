@@ -1,54 +1,96 @@
 import { useState } from "react";
 import Heading from "../../components/heading";
 import InputBox from "../../components/inputbox";
-import { Player } from "../../types/player";
 import Select from "../../components/select";
-import { Districts } from "../../types/district";
 import Button from "../../components/button";
-import useDebounce from "../../hooks/helper";
+import { useDebounce } from "../../hooks/helper";
+import { PlayerRequest, Player, Districts } from "../../types/type";
+import { ApiResponse, SelectFieldType } from "../../types/props";
+import { PostRequest } from "../../hooks/data";
+import { PlusIcon } from "@heroicons/react/20/solid";
+import Alert from "../../components/alert";
+import * as Yup from "yup";
 
-const initialValue:Player = {
-    username:"",
-    gameId:"",
-    district:Districts.THIRUVANANTHAPURAM,
+const initialValue: PlayerRequest = {
+    username: "",
+    gameId: "",
+    district: "", 
+};
+
+const defaultSelectValue: SelectFieldType = {
+    id:0,
+    value:""
 }
-const districts = Object.values(Districts);
+
+const defaultApiResponse:ApiResponse = {
+    value:false,
+    message:"",
+}
 
 const AddPlayer:React.FC = () => {
-    const [player, setPlayer] = useState(initialValue);
-    const debounce = useDebounce("http://localhost:8080/api/v1/player/check?username=",player.username.trim(), 2000);
+    const [player, setPlayer] = useState<PlayerRequest>(initialValue);
+    const [selected, setSelected] = useState<SelectFieldType>(defaultSelectValue);
+    // const [success, setSuccess] = useState<ApiResponse>(defaultApiResponse);
+    // const [error, setError] = useState<ApiResponse>(defaultApiResponse);
+    const [alertType, setAlertType] = useState<"Success" | "Error" | null>(null);
+    const [response,setResponse] = useState<ApiResponse>(defaultApiResponse);
+
+    const usernameDebounce = useDebounce("http://localhost:8080/api/v1/player/check?username=" + player.username.trim(), 2000);
+    const gameIdDebounce = useDebounce("http://localhost:8080/api/v1/player/check?gameId=" + player.gameId.trim(), 2000);
 
     const handleChange = (e:React.ChangeEvent<HTMLInputElement>, property:keyof Player) => {
         setPlayer({...player, [property]:e.target.value});
     }
 
-    const handleDistrictChange = (district:Districts) => {
-        setPlayer({ ...player, district: district });
+    const handleDistrictChange = (district:SelectFieldType) => {
+        setSelected(district);
+        setPlayer({ ...player, district: district.value });
     }
 
-    const handleButtonClick = () => {
-        console.log(player);
+    const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        PostRequest("http://localhost:8080/api/v1/player/add", player)
+            .then((response) => {
+                setAlertType("Success");
+                setResponse({value:true, message:response.data.username});
+                setTimeout(() => {
+                    setResponse(defaultApiResponse);
+                    setAlertType(null);
+                }, 5000);
+                setPlayer(initialValue);
+                setSelected(defaultSelectValue);
+            })
+            .catch((error) => {
+                setAlertType("Error")
+                setResponse({value:true, message:error});
+                setTimeout(() => {
+                    setResponse(defaultApiResponse);
+                    setAlertType(null)
+                }, 5000)
+            });
     }
 
     return(
-        <div className="flex flex-col justify-start gap-x-16 gap-y-4">
-            <Heading title="Add Player" />
-            <div className="flex gap-12">
-                <div className="rounded-xl bg-zinc-800 w-96 h-max px-4 py-6 text-center flex flex-col gap-8">
-                    <div>
-                        <InputBox label="Username" placeholder="username" onChange={(e) => handleChange(e,"username")} />
-                        {debounce && <div className=" flex justift-start pl-2 mt-2 text-xs italic text-amber-500">*Username already exist</div>}
+        <div className="flex flex-col justify-start gap-y-20">
+            <div className="flex flex-col justify-start gap-x-16 gap-y-4">
+                <Heading title="Add Player" />
+
+                <form onSubmit={(e) => handleSubmit(e)}>
+                    <div className="flex flex-col gap-4">
+                        <div className="flex justify-between">
+                            <div className="flex flex-col rounded-lg bg-zinc-800 w-96 h-64 p-6 gap-14">
+                                <InputBox label="Username" value={player.username} placeholder="username" debounce={usernameDebounce} onChange={(e) => handleChange(e,"username")} />
+                                <InputBox label="Game Id" value={player.gameId} placeholder="AAA-670-443" debounce={gameIdDebounce} onChange={(e) => handleChange(e, "gameId")} />
+                            </div>
+                            <div className="flex flex-col rounded-lg bg-zinc-800 w-96 h-32 p-6 gap-1.5">
+                                <Select options={Districts} field={"District"} selectValue={selected} selectfn={handleDistrictChange}/>
+                            </div>
+                        </div>
+                        <Button type={"submit"} width={96} Icon={PlusIcon} />
                     </div>
-                    <InputBox label="Game Id" placeholder="AAA-670-443" onChange={(e) => handleChange(e, "gameId")} />
-                </div>
-                <div className="rounded-xl bg-zinc-800 w-96 h-max px-4 py-6 text-center flex flex-col gap-2">
-                    <div className=" flex text-zinc-50 text-xl">District</div>
-                    <Select options={districts} selectedfn={handleDistrictChange} selectField={"District"}/>
-                </div>
+                </form>
             </div>
-            <div className="w-96 h-max text-center flex justify-center">
-                <Button onClick={handleButtonClick} />
-            </div>
+            <Alert type={alertType} response={response}/>
         </div>
     )
 }

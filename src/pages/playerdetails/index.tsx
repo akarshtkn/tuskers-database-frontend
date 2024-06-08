@@ -1,6 +1,6 @@
 import { PencilIcon, TrashIcon } from "@heroicons/react/16/solid";
 import Heading from "../../components/heading";
-import { AllDistricts } from "../../types/district";
+import { AllDistricts } from "../../types/type";
 import { Player } from "../../types/player";
 import Select from "../../components/select";
 import { useMemo, useState } from "react";

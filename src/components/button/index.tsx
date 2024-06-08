@@ -1,11 +1,10 @@
-import { PlusIcon } from "@heroicons/react/20/solid";
-import { ButtonProps } from "../../types/buttonprops"
+import { ButtonProps } from "../../types/props"
 
-const Button:React.FC<ButtonProps> = ({onClick}) => {
+const Button = ({type, width, Icon, onClick}:ButtonProps) => {
     return(
-        <button className="flex justify-center items-center rounded-md bg-amber-600 hover:bg-amber-500 w-52 h-7 px-4 py-5 gap-2 text-xl font-semibold text-zinc-100"
-            onClick={onClick}>
-            <div className="h-6 w-6"><PlusIcon /></div>
+        <button className={`flex justify-center items-center rounded-md bg-amber-600 hover:bg-amber-500 w-${width} h-7 px-4 py-5 gap-2 text-xl font-semibold text-zinc-100`}
+            type={type} onClick={onClick}>
+            {Icon && <Icon className="h-6 w-6" />}
             Add Player
         </button>
     )

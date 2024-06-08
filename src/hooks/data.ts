@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
+import { PlayerRequest } from "../types/type";
 
 export const useData:any = (url:string) => {
     const [data, setData] = useState([]);
@@ -14,4 +15,8 @@ export const useData:any = (url:string) => {
     }, [url])
 
     return { data, numberOfPlayers };
+}
+
+export const PostRequest = async (url:string, body:PlayerRequest) => {
+    return await axios.post(url, body);
 }
