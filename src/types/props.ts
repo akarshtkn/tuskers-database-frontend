@@ -14,14 +14,16 @@ export type InputBoxProps = {
     label:string;
     placeholder:string;
     value:string;
-    debounce:boolean;
+    debounce?:boolean;
     onChange:(e:React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export interface ButtonProps {
     type:"button" | "submit" | "reset";
+    label:string;
     Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
     width:number;
+    disabled:boolean;
     onClick?:() => void
 }
 
@@ -33,4 +35,9 @@ export type ApiResponse = {
 export type AlertProps = {
     type:"Success" | "Error" | null;
     response:ApiResponse;
+}
+
+export type LoginRequest = {
+    username:string;
+    password:string;
 }

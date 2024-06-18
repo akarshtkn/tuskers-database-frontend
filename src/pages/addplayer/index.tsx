@@ -30,15 +30,13 @@ const defaultApiResponse:ApiResponse = {
 const AddPlayer:React.FC = () => {
     const [player, setPlayer] = useState<PlayerRequest>(initialValue);
     const [selected, setSelected] = useState<SelectFieldType>(defaultSelectValue);
-    // const [success, setSuccess] = useState<ApiResponse>(defaultApiResponse);
-    // const [error, setError] = useState<ApiResponse>(defaultApiResponse);
     const [alertType, setAlertType] = useState<"Success" | "Error" | null>(null);
     const [response,setResponse] = useState<ApiResponse>(defaultApiResponse);
 
     const usernameDebounce = useDebounce("http://localhost:8080/api/v1/player/check?username=" + player.username.trim(), 2000);
     const gameIdDebounce = useDebounce("http://localhost:8080/api/v1/player/check?gameId=" + player.gameId.trim(), 2000);
 
-    const handleChange = (e:React.ChangeEvent<HTMLInputElement>, property:keyof Player) => {
+    const handleChange = (e:React.ChangeEvent<HTMLInputElement>, property:keyof PlayerRequest) => {
         setPlayer({...player, [property]:e.target.value});
     }
 
@@ -86,7 +84,7 @@ const AddPlayer:React.FC = () => {
                                 <Select options={Districts} field={"District"} selectValue={selected} selectfn={handleDistrictChange}/>
                             </div>
                         </div>
-                        <Button type={"submit"} width={96} Icon={PlusIcon} />
+                        <Button type="submit" label="Add Player" width={96} Icon={PlusIcon} disabled={usernameDebounce || gameIdDebounce}/>
                     </div>
                 </form>
             </div>
