@@ -1,8 +1,14 @@
-import { ButtonProps } from "../../types/props"
+type Props = {
+    type:"button" | "submit" | "reset";
+    label:string;
+    Icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+    disabled?:boolean;
+    onClick?:() => void
+}
 
-const Button = ({type, label, width, Icon, disabled, onClick}:ButtonProps) => {
+const Button = ({type, label, Icon, disabled, onClick}:Props) => {
     return(
-        <button className={`flex justify-center items-center rounded-md bg-amber-600 hover:bg-amber-500 w-${width} h-7 px-4 py-5 gap-2 text-xl font-semibold text-zinc-100 ${
+        <button className={`flex justify-center items-center rounded-md bg-amber-600 hover:bg-amber-500 w-full h-full px-4 py-4 gap-2 text-lg text-zinc-100 ${
                 disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
             type={type} onClick={onClick} disabled={disabled}>
             {Icon && <Icon className="h-6 w-6" />}
@@ -12,3 +18,5 @@ const Button = ({type, label, width, Icon, disabled, onClick}:ButtonProps) => {
 }
 
 export default Button;
+
+// w-${width} h-7

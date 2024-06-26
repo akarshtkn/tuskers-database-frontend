@@ -38,12 +38,3 @@ export enum AllDistricts {
     OTHERS_IN_INDIA = "OTHERS_IN_INDIA",
     OUTSIDE_INDIA = "OUTSIDE_INDIA",
 }
-
-export interface Player {
-    id:number;
-    username:string;
-    gameId:string;
-    district:string;
-}
-
-export type PlayerRequest = Pick<Player, "username" | "gameId" | "district">

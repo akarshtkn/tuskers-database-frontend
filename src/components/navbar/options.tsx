@@ -1,7 +1,13 @@
-import { NavbarOptions } from "../../types/navbar";
 import { HomeIcon, UserPlusIcon, UserGroupIcon, ChartBarIcon } from "@heroicons/react/20/solid";
 
-const options:NavbarOptions[] = [
+interface NavbarOptions{
+    id:number;
+    field:string;
+    icon:React.ReactNode;
+    route:string;
+}
+
+export const options:NavbarOptions[] = [
     {
         id:1,
         field:"Home",
@@ -26,6 +32,4 @@ const options:NavbarOptions[] = [
         icon:<ChartBarIcon />,
         route:"/list"
     }
-]
-
-export default options;
+];
