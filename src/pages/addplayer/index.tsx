@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
-import Heading from "../../components/heading";
-import InputBox from "../../components/inputbox";
-import Select from "../../components/select";
-import Button from "../../components/button";
-import { useDebounce } from "../../hooks/helper";
-import { Districts } from "../../types/type";
-import { SelectFieldType } from "../../types/props";
+import Heading from "../../components/heading/Heading";
+import InputBox from "../../components/inputbox/InputBox";
+import Select from "../../components/select/Select";
+import Button from "../../components/button/Button";
+import { useDebounce } from "../../hooks/useDebounce";
+import { Districts } from "../../types/Districts";
+import { SelectFieldType } from "../../types/NewTypes";
 import { PlusIcon } from "@heroicons/react/20/solid";
-import Alert from "../../components/alert";
+import Alert from "../../components/alert/Alert";
 import * as Yup from "yup";
 import PlayerService from "../../service/PlayerService";
-import { Player, PlayerRequest } from "../../types/NewTypes";
-import { Loader } from "../../components/loader";
+import { ErrorType, PlayerRequest } from "../../types/NewTypes";
+import { Loader } from "../../components/loader/Loader";
 import { ApiEndPoints } from "../../api/ApiEndpoints";
 
 const initialValue: PlayerRequest = {
@@ -28,27 +28,23 @@ const defaultSelectValue: SelectFieldType = {
 let PlayerSchema = Yup.object().shape({
     username: Yup.string().required('Username is required').max(25, 'Username must not exceed 40 characters'),
     gameId: Yup.string().required('Game ID is required').min(9, 'Game ID must be atleast 9 characters').max(10, 'Game ID must not exceed 10 characters'),
+    district: Yup.string().required('District is required'),
 })
 
 const AddPlayer:React.FC = () => {
     const [player, setPlayer] = useState<PlayerRequest>(initialValue);
     const [selected, setSelected] = useState<SelectFieldType>(defaultSelectValue);
-
     const [success, setSuccess] = useState<boolean>(false);
-    const [error, setError] = useState<boolean>(false);
+    const [error, setError] = useState<ErrorType>({ value: false, message: '' });
     const [loading, setLoading] = useState<boolean>(false);
-    const [data, setData] = useState<Player>({} as Player);
-    const [errorMessage, setErrorMessage] = useState<string>('');
     const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
-    const usernameDebounce = useDebounce(ApiEndPoints.duplicateUsername + player.username.trim(), 2000);
-    const gameIdDebounce = useDebounce(ApiEndPoints.duplicateGameId + player.gameId.trim(), 2000);
+    const usernameDebounce = useDebounce(ApiEndPoints.duplicateUsername, player.username.trim(), 2000);
+    const gameIdDebounce = useDebounce(ApiEndPoints.duplicateGameId, player.gameId.trim(), 2000);
 
     useEffect(() => {
         setSuccess(false);
-        setError(false);
-        setErrorMessage('');
-        setData({} as Player);
+        setError({ value: false, message: '' });
     }, [player.username, player.gameId, player.district]);
 
     const handleChange = (e:React.ChangeEvent<HTMLInputElement>, property:keyof PlayerRequest) => {
@@ -68,10 +64,9 @@ const AddPlayer:React.FC = () => {
         try{
             await PlayerSchema.validate(player, { abortEarly:false });
 
-            let{ data, success, error } = await PlayerService.addPlayer(player);
+            let{ success, message } = await PlayerService.addPlayer(player);
             if(success) {
                 setSuccess(true);
-                setData(data);
                 setLoading(false);
                 setTimeout(() => {
                     setSuccess(false);
@@ -79,11 +74,10 @@ const AddPlayer:React.FC = () => {
                     setSelected(defaultSelectValue);
                 }, 5000);
             } else {
-                setError(true);
-                setErrorMessage(error);
+                setError({ value: true, message: message });
                 setLoading(false);
                 setTimeout(() => {
-                    setError(false);
+                    setError({ value: false, message: '' });
                 }, 5000)
             }
         } catch (err) {
@@ -108,12 +102,12 @@ const AddPlayer:React.FC = () => {
                 <form onSubmit={(e) => handleSubmit(e)}>
                     <div className="flex flex-col gap-4">
                         <div className="flex justify-between">
-                            <div className="flex flex-col rounded-lg bg-zinc-800 w-96 h-64 p-6 gap-14">
+                            <div className="flex flex-col rounded-lg bg-zinc-800 w-96 h-fit p-6 gap-10">
                                 <InputBox label="Username" type="text" value={player.username} placeholder="username" debounce={usernameDebounce} onChange={(e) => handleChange(e,"username")} error={validationErrors.username}/>
                                 <InputBox label="Game Id" type="text" value={player.gameId} placeholder="AAA-670-443" debounce={gameIdDebounce} onChange={(e) => handleChange(e, "gameId")} error={validationErrors.gameId}/>
                             </div>
-                            <div className="flex flex-col rounded-lg bg-zinc-800 w-96 h-32 p-6 gap-1.5">
-                                <Select options={Districts} field={"District"} selectValue={selected} selectfn={handleDistrictChange}/>
+                            <div className="flex flex-col rounded-lg bg-zinc-800 w-96 h-fit p-6 gap-1.5">
+                                <Select options={Districts} field={"District"} selectValue={selected} selectfn={handleDistrictChange} error={validationErrors.district}/>
                             </div>
                         </div>
                         <div className="flex gap-2">
@@ -125,8 +119,8 @@ const AddPlayer:React.FC = () => {
                     </div>
                 </form>
             </div>
-            {success && <Alert type="Success" response={{value:true, message:`Player added with username : ${data.username}`}}/>}
-            {error && <Alert type="Error" response={{value:true, message:errorMessage}}/>}
+            {success && <Alert type="Success" response={{ value:true, message:"Player added to database" }}/>}
+            {error.value && <Alert type="Error" response={{ value:true, message:error.message }}/>}
         </div>
     )
 }

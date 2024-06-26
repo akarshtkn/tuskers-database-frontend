@@ -1,21 +1,23 @@
 import { PencilIcon, TrashIcon } from "@heroicons/react/16/solid";
-import Heading from "../../components/heading";
-import { AllDistricts } from "../../types/type";
-import { Player } from "../../types/player";
-import Select from "../../components/select";
+import Heading from "../../components/heading/Heading";
+import { AllDistricts } from "../../types/Districts";
+import Select from "../../components/select/Select";
 import { useMemo, useState } from "react";
-import { useData } from "../../hooks/data";
 import React from "react";
+import { Player } from "../../types/NewTypes";
 
 const districts = Object.values(AllDistricts);
+const data = [
+    {id: 1, username: }
+];
 
 const PlayerDetails:React.FC = () => {
     const [districtFilter, setDistrictFilter] = useState<AllDistricts>(AllDistricts.ALL);
     const [usernameFilter, setUsernameFilter] = useState<string>("");
     const [pageIndex, setPageIndex] = useState<number>(0);
 
-    const { data, numberOfPlayers } = 
-        useData(`http://localhost:8080/api/v1/player/get?filter=${usernameFilter}&district=${districtFilter}`);
+    // const { data, numberOfPlayers } = 
+    //     useData(`http://localhost:8080/api/v1/player/get?filter=${usernameFilter}&district=${districtFilter}`);
 
     const players:Player[] = useMemo(() => {
         return data.slice(pageIndex * 8, (pageIndex * 8) + 8);

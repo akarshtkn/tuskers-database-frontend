@@ -24,3 +24,8 @@ export type ErrorType = {
     value: boolean;
     message: string;
 }
+
+export type SelectFieldType = {
+    id:number;
+    value:string;
+}

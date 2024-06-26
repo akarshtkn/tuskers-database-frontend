@@ -27,7 +27,6 @@ const logout = async() => {
 
     const response = await ApiClient.POST<HttpStatusCode>(ApiEndPoints.logout);
 
-    console.log(response);
     if(Object.keys(response.error).length == 0){
         console.log("inside");
         success = true;

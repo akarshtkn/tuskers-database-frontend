@@ -1,12 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { options } from "./options";
 import { ArrowLeftStartOnRectangleIcon } from "@heroicons/react/20/solid";
-import Modal from "../modal";
+import Modal from "../modal/Modal";
 import { useContext, useState } from "react";
-import Button from "../button";
+import Button from "../button/Button";
 import AuthContext from "../../context/AuthProvider";
-import Alert from "../alert";
-import { Loader } from "../loader";
+import Alert from "../alert/Alert";
+import { Loader } from "../loader/Loader";
 import AuthService from "../../service/AuthService";
 import { ErrorType, User } from "../../types/NewTypes";
 

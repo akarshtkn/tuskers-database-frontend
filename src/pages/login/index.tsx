@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from "react";
-import Button from "../../components/button";
-import InputBox from "../../components/inputbox";
+import Button from "../../components/button/Button";
+import InputBox from "../../components/inputbox/InputBox";
 import { ErrorType, LoginCredentials } from "../../types/NewTypes";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router-dom";
 import AuthService from "../../service/AuthService";
-import Alert from "../../components/alert";
+import Alert from "../../components/alert/Alert";
 import AuthContext from "../../context/AuthProvider";
-import { Loader } from "../../components/loader";
+import { Loader } from "../../components/loader/Loader";
 import * as Yup from 'yup';
 
 const initialValue:LoginCredentials = {
