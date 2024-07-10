@@ -15,7 +15,7 @@ axiosInstance.interceptors.response.use(
     },
     (error) => {
         if (error?.response?.status === 401) {
-            window.location.href = "/login";
+            console.log("indavild credentials")
         }
         if (error?.response?.status === 403) {
             // window.location.href = "/unauthorized";

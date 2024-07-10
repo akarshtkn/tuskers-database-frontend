@@ -4,15 +4,17 @@ import { AllDistricts } from "../../types/Districts";
 import Select from "../../components/select/Select";
 import { useMemo, useState } from "react";
 import React from "react";
-import { Player } from "../../types/NewTypes";
+import { Player, SelectFieldType } from "../../types/Types";
 
-const districts = Object.values(AllDistricts);
-const data = [
-    {id: 1, username: }
+const Districts = Object.values(AllDistricts);
+const data: Player[] = [
+    {id: 1, username: "akarsh", gameId: "ABC123456", district: "KANNUR"}
 ];
 
+const numberOfPlayers: number = 20;
+
 const PlayerDetails:React.FC = () => {
-    const [districtFilter, setDistrictFilter] = useState<AllDistricts>(AllDistricts.ALL);
+    const [districtFilter, setDistrictFilter] = useState<SelectFieldType>(Districts[0]);
     const [usernameFilter, setUsernameFilter] = useState<string>("");
     const [pageIndex, setPageIndex] = useState<number>(0);
 
@@ -27,7 +29,7 @@ const PlayerDetails:React.FC = () => {
         return Math.ceil(data.length / 8)
     }, [data])
 
-    const handleDistrictFilter = (district:AllDistricts) => {
+    const handleDistrictFilter = (district:SelectFieldType) => {
         setDistrictFilter(district);
     }
 
@@ -48,7 +50,7 @@ const PlayerDetails:React.FC = () => {
                     <div className="flex items-center gap-x-4">
                         <h1 className="text-zinc-100">Filter by district</h1>
                         <div className="w-52">
-                            <Select options={districts} selectedfn={handleDistrictFilter} selectField={"District"}/>
+                            <Select options={Districts} selectfn={handleDistrictFilter} selectValue={districtFilter} />
                         </div>
                     </div>
                 </div>

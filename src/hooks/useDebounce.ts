@@ -4,11 +4,12 @@ import { AxiosInstance } from "../api/ApiHelper";
 export const useDebounce = ( url: string, value: string, delay: number) => {
     const [debounce, setDebounce] = useState<boolean>(false);
 
-    if (value === '') {
-        return debounce;
-    }
-
     useEffect(() => {
+        if (value === '') {
+            setDebounce(false);
+            return;
+        }
+
         const timerId = setTimeout(() => {
             AxiosInstance.post(url + value)
                 .then(response => {

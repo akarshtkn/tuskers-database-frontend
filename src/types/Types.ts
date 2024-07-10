@@ -20,12 +20,17 @@ export type PlayerRequest = Pick<Player, "username" | "gameId" | "district">
 
 export type PlayerResponse = Pick<Player, "id" | "username">
 
-export type ErrorType = {
-    value: boolean;
-    message: string;
-}
-
 export type SelectFieldType = {
     id:number;
     value:string;
+}
+
+export type ApiError = {
+    status:number;
+    message:string;
+}
+
+export type ErrorType = {
+    value: boolean;
+    message: string;
 }

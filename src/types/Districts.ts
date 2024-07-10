@@ -1,4 +1,4 @@
-import { SelectFieldType } from "./NewTypes";
+import { SelectFieldType } from "./Types";
 
 const createDistrictOptions = (includeAllOption: boolean): SelectFieldType[] => {
     const districts: SelectFieldType[] = [

@@ -1,42 +1,47 @@
-import { AxiosError } from "axios";
+import { ApiError } from "../types/Types";
 import { AxiosInstance } from "./ApiHelper"
 
 type Response<T> = {
-    data:T;
-    error:ApiError;
+    data:T | null;
+    error:ApiError | null;
 };
 
-type ApiError = {
-    status:number;
-    message:string;
-}
+const handleError = (error: any): ApiError => {
+    if (error.isAxiosError) {
+        if (error.response) {
+            // Server responded with a status other than 200 range
+            return {
+              status: error.response.status,
+              message: error.response.data?.message || 'An error occurred',
+            };
+        } else if (error.request) {
+            // Request was made but no response received
+            return {
+              status: 0,
+              message: 'Network error',
+            };
+        } else {
+            // Something happened in setting up the request
+            return {
+              status: -1,
+              message: error.message,
+            };
+        }
+    } else {
+        return {
+          status: -1,
+          message: 'An unknown error occurred',
+        };
+    }
+};
 
 const handleRequest = async <T>(request: Promise<{ data: T }>): Promise<Response<T>> => {
-    let data:T = {} as T;
-    let error:ApiError = {} as ApiError;
-
     try {
         const response = await request;
-        data = response.data;
-    } catch (err) {
-        if (err instanceof AxiosError) {
-            if (err.response) {
-                error.status = err.response.status;
-                error.message = err.response.data?.message;
-            } else if (err.request) {
-                error.status = 0;
-                error.message = "Network error";
-            } else {
-                error.status = -1;
-                err.message = err.message;
-            }
-        } else {
-            error.status = -1;
-            error.message = 'An unknown error occurred';
-        }
+       return { data: response.data, error: null };
+    } catch (error) {
+        return { data: null, error: handleError(error) };
     }
-
-    return { data, error };
 };
 
 const GET = async<T> (url:string, params:Record<string, any> = {}) : Promise<Response<T>> => {

@@ -6,14 +6,14 @@ import { useContext, useState } from "react";
 import Button from "../button/Button";
 import AuthContext from "../../context/AuthProvider";
 import Alert from "../alert/Alert";
-import { Loader } from "../loader/Loader";
+import Loader from "../loader/Loader";
 import AuthService from "../../service/AuthService";
-import { ErrorType, User } from "../../types/NewTypes";
+import { ApiError, User } from "../../types/Types";
 
 const Navbar:React.FC = () => {
     const [open, setOpen] = useState<boolean>(false);
     const [success, setSuccess] = useState<boolean>(false);
-    const [error, setError] = useState<ErrorType>({ value: false, message: ''});
+    const [error, setError] = useState<ApiError | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 
     const { setAuth } = useContext(AuthContext);
@@ -25,23 +25,23 @@ const Navbar:React.FC = () => {
 
     const handleLogout = async () => {
         setLoading(true);
+        setError(null);
 
-        let { success, message } = await AuthService.logout();
-
-        if (success) {
+        let { error } = await AuthService.logout();
+        if (error) {
+            setError(error);
+            setLoading(false);
+            setTimeout(() => {
+                setOpen(false);
+                setError(null);
+            }, 3000);
+        } else {
             setSuccess(true);
             setAuth({} as User);
             setLoading(false);
             setTimeout(() => {
                 navigate('/login');
-              }, 2000)
-        } else { 
-            setError({ value: true, message: message});
-            setLoading(false);
-            setTimeout(() => {
-                setOpen(false);
-                setError({ value: true, message: message});
-            }, 3000);
+            }, 2000)
         }
     }
 
@@ -79,8 +79,8 @@ const Navbar:React.FC = () => {
                     </div>
                 </div>
                 {loading && <Loader />}
-                {success && <Alert type="Success" response={{value:true, message:"User logged out. Redirecting to Login page"}}/>}
-                {error.value && <Alert type="Error" response={{value:true, message:error.message}}/>}
+                {success && <Alert isSuccess={true} isFailure={false} message="User logged out. Redirecting to Login page" />}
+                {error && <Alert isSuccess={false} isFailure={true} message={error.message} />}
             </Modal>
         </div>
     )
