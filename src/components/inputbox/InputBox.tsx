@@ -1,3 +1,5 @@
+import React from "react";
+
 type Props = {
     label:string;
     type:"text" | "password";
@@ -8,7 +10,7 @@ type Props = {
     error?:string;
 }
 
-const InputBox = ({label, type, value, placeholder, debounce, onChange, error}:Props) => {
+const InputBox = React.memo(({label, type, value, placeholder, debounce, onChange, error}:Props) => {
     return(
         <div className="flex flex-col items-start gap-2">
             <div className="flex justify-between w-full">
@@ -20,6 +22,6 @@ const InputBox = ({label, type, value, placeholder, debounce, onChange, error}:P
             {error && <div className="text-red-500 text-sm">{error}</div>}
         </div>
     )
-}
+});
 
 export default InputBox;

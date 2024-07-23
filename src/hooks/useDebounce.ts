@@ -18,7 +18,7 @@ export const useDebounce = ( url: string, value: string, delay: number) => {
         }, delay)
 
         return () => clearTimeout(timerId);
-    },[url, delay])
+    },[url, value, delay])
 
     return debounce;
 }

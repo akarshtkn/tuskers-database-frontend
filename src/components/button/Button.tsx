@@ -1,3 +1,5 @@
+import React from "react";
+
 type Props = {
     type:"button" | "submit" | "reset";
     label:string;
@@ -6,7 +8,7 @@ type Props = {
     onClick?:() => void
 }
 
-const Button = ({type, label, Icon, disabled, onClick}:Props) => {
+const Button = React.memo(({type, label, Icon, disabled, onClick}:Props) => {
     return(
         <button className={`flex justify-center items-center rounded-md bg-amber-600 hover:bg-amber-500 w-full h-full px-4 py-4 gap-2 text-lg text-zinc-100 ${
                 disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
@@ -15,7 +17,7 @@ const Button = ({type, label, Icon, disabled, onClick}:Props) => {
             {label}
         </button>
     )
-}
+});
 
 export default Button;
 

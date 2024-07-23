@@ -1,11 +1,11 @@
 import React from "react";
 
-type propTypes = {
+type PropTypes = {
   open: boolean;
   onClose: () => void;
   children: React.ReactNode;
 };
-const Modal: React.FC<propTypes> = ({ open, onClose, children }) => {
+const Modal: React.FC<PropTypes> = ({ open, onClose, children }) => {
   return (
     <div className={`fixed inset-0 flex justify-center items-center transition-colors ${open ? "visible bg-black/50 backdrop-blur-sm" : "invisible"}`}>
         <div className={`bg-zinc-700 rounded-lg shadow p-6 transition-all w-96 h-fit ${open ? "scale-100 opacity-100" : "scale-110 opacitiy-0"}`}

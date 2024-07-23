@@ -1,6 +1,7 @@
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { SelectFieldType } from '../../types/Types';
+import React from 'react';
 
 function classNames(...classes:string[]) {
   return classes.filter(Boolean).join(' ')
@@ -14,14 +15,14 @@ export type Props = {
   error?: string;
 }
 
-const Select = ({options, field, selectValue, selectfn, error}:Props) => {
+const Select = React.memo(({options, field, selectValue, selectfn, error}:Props) => {
 
   const handleChange = (option:SelectFieldType) => {
     selectfn(option);
   }
 
   return (
-    <>
+    <div className="flex flex-col gap-2">
     {field && <div className=" flex text-zinc-50 text-xl">{field}</div>}
     <Listbox value={selectValue} onChange={handleChange}>
       {({ open }) => (
@@ -81,8 +82,8 @@ const Select = ({options, field, selectValue, selectfn, error}:Props) => {
       )}
     </Listbox>
     {error && <div className="text-red-500 text-sm">{error}</div>}
-    </>
+    </div>
   )
-}
+});
 
 export default Select;

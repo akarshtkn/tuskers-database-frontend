@@ -7,7 +7,7 @@ interface NavbarOptions{
     route:string;
 }
 
-export const options:NavbarOptions[] = [
+const options:NavbarOptions[] = [
     {
         id:1,
         field:"Home",
@@ -18,13 +18,13 @@ export const options:NavbarOptions[] = [
         id:2,
         field:"Add Player",
         icon:<UserPlusIcon />,
-        route:"/player-add"
+        route:"/addPlayer"
     },
     {
         id:3,
         field:"Player Details",
         icon:<UserGroupIcon />,
-        route:"/player-details"
+        route:"/playerDetails"
     },
     {
         id:4,
@@ -33,3 +33,5 @@ export const options:NavbarOptions[] = [
         route:"/list"
     }
 ];
+
+export { options as Options };
